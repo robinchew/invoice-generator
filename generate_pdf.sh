@@ -16,7 +16,6 @@ os_name=$(uname -s)
 case $os_name in
   Linux)
     # Linux path
-    whereis google-chrome
     path_to_chrome="/usr/bin/google-chrome"
     ;;
   Darwin)
