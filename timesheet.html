@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/ramda/latest/ramda.min.js"></script>
+    <title>Invoice Generator</title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 5px;
+            border: 1px solid black;
+        
+        }
+        th,
+        td {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            }
+        th {
+            background-color: #f2f2f2;
+            }
+        .details-wrapper{
+            display: flex;
+            
+        }
+        .banking-details table{
+            border: none;
+        }
+        .banking-details table tr td{
+            border: none;
+        }
+        .client-details{
+            margin-right: 200px;
+        }
+        .client-details table{
+            border: none;
+        }
+        .client-details table tr td{
+            border: none;
+        }
+
+    </style>
+  </head>
+  <body>
+    
+    
+
+    <script>
+        function sum(arr) {
+        return arr.reduce((acc, num) => acc + num, 0);
+      }
+      
+        const text = `
+Mon 28 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Improve web translations so that Google Translate bulk translates more accurately
+Tue 29 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Deploy engineering portal with web-translations. Refactor mineral-input for more stable translation.
+Wed 30 Aug 2023 15:00 - 15:45 Sprint
+Thu 31 Aug 2023 10:45 - 13:30, 14:00 - 15:30 Move more code of extracting English text from web-translations to mineral-input instead, simplifying web-translations.
+Fri 01 Aug 2023 12:00 - 13:30
+
+
+`;
+      
+        const re = /([0-9]+:[0-9]+[ -]+[0-9]+:[0-9]+)/g;
+
+        function replaceLine(line) {
+        const segmented = R.flatten(
+          R.splitEvery(2, line.split(re)).map(([text, match]) => {
+            if (!match) {
+              return text;
+            }
+            const [start, end] = match.replace(' ', '').split('-');
+
+            const [startHours, endHours] = [start, end].map((time) => {
+              const [hr, min] = time.split(':').map((v) => parseInt(v, 10));
+              return hr + min / 60;
+            });
+            return [text, { timeRange: match, hours: endHours - startHours }];
+          })
+        );
+        const dateColumn = segmented[0];
+        const timeRange = R.dropLast(1, R.drop(1, segmented))
+          .map((item) => (item.timeRange || item))
+          .join('');
+        const description = R.last(segmented);
+        const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
+        return [dateColumn, timeRange, description, totalHoursPerRow];
+      }
+
+        function renderCalculation() {
+            const hourlyWage = 80; // Example hourly wage baed on screenshot, you can adjust this value
+            const rows = text.split('\n').filter((v) => v).map(replaceLine);
+            const tableRows = rows.map((columns) => {
+                const [date, timeRange, description, hours] = columns;
+                const lineTotal = (parseFloat(hours) || 0) * hourlyWage;
+                return `<tr><td>${date}</td><td>${timeRange}</td><td>${description}</td><td>${hours.toFixed(2)}</td><td>$${lineTotal.toFixed(2)}</td></tr>`;
+            }).join('\n');
+
+            const totalHours = sum(rows.map((arr) => arr[3]));
+            const totalAmount = totalHours * hourlyWage;
+
+            const firstDate = rows[0][0];
+            const lastDate = R.last(rows)[0];
+            const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>$80 x hrs</th></tr></thead><tbody>' + tableRows + '</tbody></table>';
+            const totalHoursText = `<h1>Total Hours: ${totalHours.toFixed(2)} hrs</h1>`;
+            const totalAmountText = `<h2>Total Amount Due: $${totalAmount.toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
+            const clientDetails = `      
+            <div class="client-details">
+                <h2>Client Details</h2>
+                <table>
+                    <tr>
+                        <td>Comapny</td>
+                        <td>Enter Company</td>
+                    </tr>
+                    <tr>
+                        <td>E-mail</td>
+                        <td>Enter E-mail</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>phone numer</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </table>
+            </div>`;
+            const bankingDetails = `    
+            <div class="banking-details">
+                <h2>Banking Details</h2>
+                <table>
+                    <tr>
+                        <td>Bank</td>
+                        <td>Bank West</td>
+                    </tr>
+                    <tr>
+                        <td>Account Name</td>
+                        <td>Robin Bankwest</td>
+                    </tr>
+                    <tr>
+                        <td>BSB No.</td>
+                        <td>306063</td>
+                    </tr>
+                    <tr>
+                        <td>Account Number</td>
+                        <td>0977324</td>
+                    </tr>
+                    <tr>
+                        <td>Reference</td>
+                        <td>Enter Reference</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </table>
+            </div>`;
+            
+            
+            document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
+            }
+
+        renderCalculation();
+        </script>
+        
+  </body>
+</html>
