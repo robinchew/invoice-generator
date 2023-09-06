@@ -1,29 +1,32 @@
-import asyncio
-from pyppeteer import launch
+import subprocess
 
-async def generate_pdf(html_file_path, pdf_output_path):
-    # Launch headless Chromium browser
-    browser = await launch(headless=True)
-    page = await browser.newPage()
+def generate_pdf(html_file_path, pdf_output_path, chrome_path):
 
-    # Set a larger viewport size to capture the entire page
-    await page.setViewport({'width': 1920, 'height': 1080})
+    command = [
+        chrome_path,
+        '--headless',
+        '--disable-gpu',
+        f'--print-to-pdf={pdf_output_path}',
+        html_file_path
+    ]
 
-    # Navigate to the HTML file
-    await page.goto(f'file://{html_file_path}')
-
-    # Wait for a selector to become visible (you can replace 'body' with your element)
-    await page.waitForSelector('body')
-
-    # Generate the PDF
-    await page.pdf({'path': pdf_output_path, 'format': 'A4'})
-
-    # Close the browser
-    await browser.close()
+    try:
+        subprocess.run(command, check=True)
+        print("PDF has been generated")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
 
 # Change the path as required
-html_file_path = "/Users/School/Documents/Freelance/Invoice generator/jspdf/timesheet.html"
+# This the Chrome headless path for Mac OS
+chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+# Windows
+# chrome_path = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+# Linux Ubuntu
+# whereis google-chrome
+# /usr/bin/google-chrome
+
+html_file_path = "timesheet.html"
 pdf_output_path = "output.pdf"
 
 # Run the PDF generation function
-asyncio.get_event_loop().run_until_complete(generate_pdf(html_file_path, pdf_output_path))
+generate_pdf(html_file_path, pdf_output_path, chrome_path)
