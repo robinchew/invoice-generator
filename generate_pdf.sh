@@ -6,16 +6,30 @@ html_file="timesheet.html"
 # Define the PDF output file path
 pdf_output="output.pdf"
 
-# You have to provide the path to Chrome for the OS you are using
 # Windows
-# "C:\Program Files\Google\Chrome\Application\chrome.exe"
+# path_to_chrome="C:\Program Files\Google\Chrome\Application\chrome.exe"
 
-# Linux Ubuntu
-# whereis google-chrome
-# /usr/bin/google-chrome
+# Determine the user's operating system
+os_name=$(uname -s)
 
-# Mac OS
-path_to_chrome=/Applications/"Google\ Chrome.app"/Contents/MacOS/"Google\ Chrome"
+# Set the path to Chrome based on the operating system
+case $os_name in
+  Linux)
+    # Linux path
+    whereis google-chrome
+    path_to_chrome="/usr/bin/google-chrome"
+    ;;
+  Darwin)
+    # macOS path
+    path_to_chrome=/Applications/"Google\ Chrome.app"/Contents/MacOS/"Google\ Chrome"
+    ;;
+  *)
+    # Default path (modify as needed)
+    echo "Unsupported operating system: $os_name"
+    exit 1
+    ;;
+esac
+
 # Run Chrome Headless in headless mode to generate the PDF
     eval $path_to_chrome  \
     --headless  \
