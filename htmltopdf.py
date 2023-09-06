@@ -1,12 +1,14 @@
 import subprocess
 import sys
 def generate_pdf(html_file_path, pdf_output_path, chrome_path):
-
+    
     command = [
         chrome_path,
         '--headless',
         '--disable-gpu',
-        f'--print-to-pdf={pdf_output_path}',
+        '--disable-software-rasterizer',
+        '--no-margins',
+        f'--print-to-pdf={pdf_output_path}',    
         html_file_path
     ]
 

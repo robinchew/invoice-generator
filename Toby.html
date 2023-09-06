@@ -46,11 +46,6 @@
             border: none;
         }
 
-        .header{
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-        }
         .invoice-date{
             display: flex;
             justify-content: space-between;
@@ -72,13 +67,16 @@
       }
       
         const text = `
-Mon 28 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Improve web translations so that Google Translate bulk translates more accurately
-Tue 29 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Deploy engineering portal with web-translations. Refactor mineral-input for more stable translation.
-Wed 30 Aug 2023 15:00 - 15:45 Sprint
-Thu 31 Aug 2023 10:45 - 13:30, 14:00 - 15:30 Move more code of extracting English text from web-translations to mineral-input instead, simplifying web-translations.
-Fri 01 Aug 2023 12:00 - 13:30
-
-
+Fri 01 Sep 2023 20:30 - 22:00 Expanding the given html file according to the given invoice
+Fri 01 Sep 2023 22:00 - 23:30 Client communication & Exploring Puppeteer as an alternative
+Sat 02 Sep 2023 09:30 - 11:00 Troubleshooting and implementing async/await.
+Sat 02 Sep 2023 12:00 - 14:00 Implementing wkhtmltopdf with puppeteer.js
+Mon 04 Sep 2023 11:00 - 12:30 Creating the converter in python
+Mon 04 Sep 2023 13:00 - 14:30 Fine-tuning and customization
+Wed 06 Sep 2023 14:00 - 14:30 Testing before presenting to client  
+Wed 06 Sep 2023 14:30 - 15:45 Client communication and code review 
+Wed 06 Sep 2023 17:00 - 19:00 Implementing headless chrome python and bash script
+Wed 06 Sep 2023 21:30 - 22:00 Final testing and troubleshooting
 `;
       
         const re = /([0-9]+:[0-9]+[ -]+[0-9]+:[0-9]+)/g;
@@ -106,9 +104,11 @@ Fri 01 Aug 2023 12:00 - 13:30
         const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
         return [dateColumn, timeRange, description, totalHoursPerRow];
       }
-
+        function getCurrentDate(){
+            
+        }
         function renderCalculation() {
-            const hourlyWage = 80; // Example hourly wage baed on screenshot, you can adjust this value
+            const hourlyWage = 30; // Example hourly wage baed on screenshot, you can adjust this value
             const rows = text.split('\n').filter((v) => v).map(replaceLine);
             const tableRows = rows.map((columns) => {
                 const [date, timeRange, description, hours] = columns;
@@ -121,7 +121,7 @@ Fri 01 Aug 2023 12:00 - 13:30
 
             const firstDate = rows[0][0];
             const lastDate = R.last(rows)[0];
-            const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>$80 x hrs</th></tr></thead><tbody>' + tableRows + '</tbody></table>';
+            const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>$30 x hrs</th></tr></thead><tbody>' + tableRows + '</tbody></table>';
             const totalHoursText = `<h1>Total Hours: ${totalHours.toFixed(2)} hrs</h1>`;
             const totalAmountText = `<h2>Total Amount Due: $${totalAmount.toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
             const clientDetails = `      
@@ -129,18 +129,15 @@ Fri 01 Aug 2023 12:00 - 13:30
                 <h2>Client Details</h2>
                 <table>
                     <tr>
-                        <td>Company</td>
-                        <td>Enter Company</td>
+                        <td>Name</td>
+                        <td>Robin Chew</td>
                     </tr>
-                    <tr>
-                        <td>E-mail</td>
-                        <td>Enter E-mail</td>
-                    </tr>
+
                     <tr>
                         <td>Phone</td>
-                        <td>phone numer</td>
+                        <td>+61 403 048 574</td>
                     </tr>
-                    <!-- Add more rows as needed -->
+                   
                 </table>
             </div>`;
             const bankingDetails = `    
@@ -149,46 +146,45 @@ Fri 01 Aug 2023 12:00 - 13:30
                 <table>
                     <tr>
                         <td>Bank</td>
-                        <td>Bank West</td>
+                        <td>CommonWealth bank</td>
                     </tr>
                     <tr>
                         <td>Account Name</td>
-                        <td>Robin Bankwest</td>
+                        <td>Tuguldur Gantumur</td>
                     </tr>
                     <tr>
                         <td>BSB No.</td>
-                        <td>306063</td>
+                        <td>066000</td>
                     </tr>
                     <tr>
                         <td>Account Number</td>
-                        <td>0977324</td>
+                        <td>12512184</td>
                     </tr>
-                    <tr>
-                        <td>Reference</td>
-                        <td>Enter Reference</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
                 </table>
             </div>`;
-
-            const invoice = `<h2>Invoice ID:  </h2>`
-            const currDate = `<h3> 7 September 2023 </h3>`
+            
+            const invoiceDetails = `<h2>Invoice </h2>`
             const userDetails = `
             <div class='header'>
-                <span> 
-                CHEW, ROUH PIN ROBIN
-                </span>
-                <span>
-                ABN 73 767 915 269
-                </span>
-                <span>
-                    me@robin.com.au
-                </span
+            <span> 
+            CHEW, ROUH PIN ROBIN
+            </span>
+            <span>
+            ABN 73 767 915 269
+            </span>
+            <span>
+                me@robin.com.au
+            </span
             </div>
             `
-            
-            
-            document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
+
+            const invoice = `<h2>Invoice ID: RC09062023  </h2>`
+
+
+
+            const currDate = `<h3 id=""date>7 September 2023</h3>`
+
+            document.body.innerHTML = `<h2>Toby Timesheet - ${firstDate} to ${lastDate}</h2>` + `<div class="invoice-date">${invoice}${currDate}</div>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
             }
 
         renderCalculation();
