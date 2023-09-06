@@ -28,7 +28,7 @@ Feel free to adapt the script to fit your specific needs and HTML structure.
    ```
 
 - Or run the bash script:
-
+CHROME_BIN="/usr/bin/chromium" ./generate_pdf.sh
   ```bash
   bash generate_pdf.sh
   ```
