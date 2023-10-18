@@ -33,3 +33,7 @@ CHROME_BIN="/usr/bin/chromium" ./generate_pdf.sh
   bash generate_pdf.sh
   ```
 
+## Example
+
+![example output htmltopdf](https://github.com/gtrtuugii/invoice-generator/blob/main/ExampleOutput.png)
+
