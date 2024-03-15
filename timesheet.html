@@ -108,11 +108,12 @@ Fri 01 Aug 2023 12:00 - 13:30
 
         function renderCalculation() {
             const hourlyWage = 80; // Example hourly wage baed on screenshot, you can adjust this value
+            const taxPercent = 10; // Percent to be added at the end
             const rows = text.split('\n').filter((v) => v).map(replaceLine);
             const tableRows = rows.map((columns) => {
                 const [date, timeRange, description, hours] = columns;
                 const lineTotal = (parseFloat(hours) || 0) * hourlyWage;
-                return `<tr><td>${date}</td><td>${timeRange}</td><td>${description}</td><td>${hours.toFixed(2)}</td><td>$${lineTotal.toFixed(2)}</td></tr>`;
+                return `<tr><td>${date}</td><td>${timeRange}</td><td>${description}</td><td>${hours.toFixed(2)}</td><td>$${lineTotal.toFixed(2)}+<br />$${(lineTotal/taxPercent).toFixed(2)} Tax</td></tr>`;
             }).join('\n');
 
             const totalHours = sum(rows.map((arr) => arr[3]));
@@ -122,7 +123,7 @@ Fri 01 Aug 2023 12:00 - 13:30
             const lastDate = R.last(rows)[0];
             const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>$80 x hrs</th></tr></thead><tbody>' + tableRows + '</tbody></table>';
             const totalHoursText = `<h1>Total Hours: ${totalHours.toFixed(2)} hrs</h1>`;
-            const totalAmountText = `<h2>Total Amount Due: $${totalAmount.toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
+            const totalAmountText = `<h2>Total Amount Due: $${totalAmount.toFixed(2)} / $${(totalAmount + totalAmount/taxPercent).toFixed(2)} With Tax (${taxPercent}%) <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
             const clientDetails = `      
             <div class="client-details">
                 <h2>Client Details</h2>
