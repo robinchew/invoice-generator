@@ -15,7 +15,7 @@
             border-collapse: collapse;
             border-radius: 5px;
             border: 1px solid black;
-        
+
         }
         th,
         td {
@@ -27,7 +27,7 @@
             }
         .details-wrapper{
             display: flex;
-            
+
         }
         .banking-details table{
             border: none;
@@ -62,14 +62,14 @@
     </style>
   </head>
   <body>
-    
-    
+
+
 
     <script>
         function sum(arr) {
         return arr.reduce((acc, num) => acc + num, 0);
       }
-      
+
         const text = `
 Mon 28 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Improve web translations so that Google Translate bulk translates more accurately
 Tue 29 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Deploy engineering portal with web-translations. Refactor mineral-input for more stable translation.
@@ -79,7 +79,7 @@ Fri 01 Aug 2023 12:00 - 13:30
 
 
 `;
-      
+
         const re = /([0-9]+:[0-9]+[ -]+[0-9]+:[0-9]+)/g;
 
         function replaceLine(line) {
@@ -135,61 +135,67 @@ Fri 01 Aug 2023 12:00 - 13:30
             const totalHoursText = `<h1>Total Hours: ${totalHours.toFixed(2)} hrs</h1>`;
             const totalAmountText = `<h2>Total Amount Due: $${(totalAmount + taxAmount).toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
             const clientDetails = `
-                <div class="client-details">
-                    <h2>Client Details</h2>
-                    <table>
-                        <tr>
-                            <td>Company</td>
-                            <td>Enter Company</td>
-                        </tr>
-                        <tr>
-                            <td>E-mail</td>
-                            <td>Enter E-mail</td>
-                        </tr>
-                        <tr>
-                            <td>Phone</td>
-                            <td>phone numer</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </table>
-                </div>`;
+            <div class="client-details">
+                <h2>Client Details</h2>
+                <table>
+                    <tr>
+                        <td>Company</td>
+                        <td>Enter Company</td>
+                    </tr>
+                    <tr>
+                        <td>E-mail</td>
+                        <td>Enter E-mail</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>phone numer</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </table>
+            </div>`;
             const bankingDetails = `
-                <div class="banking-details">
-                    <h2>Banking Details</h2>
-                    <table>
-                        <tr>
-                            <td>Bank</td>
-                            <td>Bank West</td>
-                        </tr>
-                        <tr>
-                            <td>Account Name</td>
-                            <td>Robin Bankwest</td>
-                        </tr>
-                        <tr>
-                            <td>BSB No.</td>
-                            <td>306063</td>
-                        </tr>
-                        <tr>
-                            <td>Account Number</td>
-                            <td>0977324</td>
-                        </tr>
-                        <tr>
-                            <td>Reference</td>
-                            <td>Enter Reference</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </table>
-                </div>`;
+            <div class="banking-details">
+                <h2>Banking Details</h2>
+                <table>
+                    <tr>
+                        <td>Bank</td>
+                        <td>Bank West</td>
+                    </tr>
+                    <tr>
+                        <td>Account Name</td>
+                        <td>Robin Bankwest</td>
+                    </tr>
+                    <tr>
+                        <td>BSB No.</td>
+                        <td>306063</td>
+                    </tr>
+                    <tr>
+                        <td>Account Number</td>
+                        <td>0977324</td>
+                    </tr>
+                    <tr>
+                        <td>Reference</td>
+                        <td>Enter Reference</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </table>
+            </div>`;
 
-            const invoice = `<h2>Invoice ID:  </h2>`;
-            const currDate = `<h3> 7 September 2023 </h3>`;
+            const invoice = `<h2>Invoice ID:  </h2>`
+            const currDate = `<h3> 7 September 2023 </h3>`
             const userDetails = `
-                <div class='header'>
-                    <span>CHEW, ROUH PIN ROBIN</span>
-                    <span>ABN 73 767 915 269</span>
-                    <span>me@robin.com.au</span>
-                </div>
-            `;
+            <div class='header'>
+                <span>
+                CHEW, ROUH PIN ROBIN
+                </span>
+                <span>
+                ABN 73 767 915 269
+                </span>
+                <span>
+                    me@robin.com.au
+                </span
+            </div>
+            `
 
             document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` + invoiceTable + totalAmountText + `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
       }
