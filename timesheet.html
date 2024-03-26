@@ -15,7 +15,7 @@
             border-collapse: collapse;
             border-radius: 5px;
             border: 1px solid black;
-        
+
         }
         th,
         td {
@@ -27,7 +27,7 @@
             }
         .details-wrapper{
             display: flex;
-            
+
         }
         .banking-details table{
             border: none;
@@ -62,14 +62,14 @@
     </style>
   </head>
   <body>
-    
-    
+
+
 
     <script>
         function sum(arr) {
         return arr.reduce((acc, num) => acc + num, 0);
       }
-      
+
         const text = `
 Mon 28 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Improve web translations so that Google Translate bulk translates more accurately
 Tue 29 Aug 2023 10:30 - 13:30, 14:00 - 18:30 Deploy engineering portal with web-translations. Refactor mineral-input for more stable translation.
@@ -79,7 +79,7 @@ Fri 01 Aug 2023 12:00 - 13:30
 
 
 `;
-      
+
         const re = /([0-9]+:[0-9]+[ -]+[0-9]+:[0-9]+)/g;
 
         function replaceLine(line) {
@@ -107,7 +107,8 @@ Fri 01 Aug 2023 12:00 - 13:30
       }
 
         function renderCalculation() {
-            const hourlyWage = 80; // Example hourly wage baed on screenshot, you can adjust this value
+            const hourlyWage = 80; // Example hourly wage based on screenshot, you can adjust this value
+            const taxPercent = 10; // Percent to be added at the end
             const rows = text.split('\n').filter((v) => v).map(replaceLine);
             const tableRows = rows.map((columns) => {
                 const [date, timeRange, description, hours] = columns;
@@ -115,15 +116,25 @@ Fri 01 Aug 2023 12:00 - 13:30
                 return `<tr><td>${date}</td><td>${timeRange}</td><td>${description}</td><td>${hours.toFixed(2)}</td><td>$${lineTotal.toFixed(2)}</td></tr>`;
             }).join('\n');
 
+            // Calculate totals
             const totalHours = sum(rows.map((arr) => arr[3]));
             const totalAmount = totalHours * hourlyWage;
+            const taxAmount = totalAmount * (taxPercent / 100);
+            const grandTotal = totalAmount + taxAmount;
+
+            // Construct additional row for the table
+            const additionalRow = `
+                <tr><td colspan="3"></td><td>Total</td><td>$${totalAmount.toFixed(2)}</td></tr>
+                <tr><td colspan="3"></td><td>GST (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>
+                <tr><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>
+            `;
 
             const firstDate = rows[0][0];
             const lastDate = R.last(rows)[0];
-            const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>$80 x hrs</th></tr></thead><tbody>' + tableRows + '</tbody></table>';
+            const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th>Money</th></tr></thead><tbody>' + tableRows + additionalRow + '</tbody></table>';
             const totalHoursText = `<h1>Total Hours: ${totalHours.toFixed(2)} hrs</h1>`;
-            const totalAmountText = `<h2>Total Amount Due: $${totalAmount.toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
-            const clientDetails = `      
+            const totalAmountText = `<h2>Total Amount Due: $${(totalAmount + taxAmount).toFixed(2)} <span>for ${totalHours.toFixed(2)} hours worked </span> </h2> `;
+            const clientDetails = `
             <div class="client-details">
                 <h2>Client Details</h2>
                 <table>
@@ -142,7 +153,7 @@ Fri 01 Aug 2023 12:00 - 13:30
                     <!-- Add more rows as needed -->
                 </table>
             </div>`;
-            const bankingDetails = `    
+            const bankingDetails = `
             <div class="banking-details">
                 <h2>Banking Details</h2>
                 <table>
@@ -174,7 +185,7 @@ Fri 01 Aug 2023 12:00 - 13:30
             const currDate = `<h3> 7 September 2023 </h3>`
             const userDetails = `
             <div class='header'>
-                <span> 
+                <span>
                 CHEW, ROUH PIN ROBIN
                 </span>
                 <span>
@@ -185,13 +196,10 @@ Fri 01 Aug 2023 12:00 - 13:30
                 </span
             </div>
             `
-            
-            
-            document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
-            }
 
+            document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` + invoiceTable + totalAmountText + `<div class="details-wrapper">${clientDetails}${bankingDetails}</div>`;
+      }
         renderCalculation();
         </script>
-        
   </body>
 </html>

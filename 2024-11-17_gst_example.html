@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="ramda.min.js"></script>
+    <script src="importInvoice.js"></script>
+    <title></title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+        th,
+        td {
+            padding: 8px;
+            border: 1px solid #dddddd;
+            }
+        th {
+            background-color: #f2f2f2;
+            }
+        .details-wrapper{
+            display: flex;
+        }
+        .banking-details table{
+            border: none;
+        }
+        .banking-details table tr td{
+            border: none;
+        }
+        .client-details{
+            margin-right: 200px;
+        }
+        .client-details table{
+            border: none;
+        }
+        .client-details table tr td{
+            border: none;
+        }
+
+        .header{
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+        .invoice-date{
+            display: flex;
+            justify-content: space-between;
+        }
+        @media print {
+            @page { margin: 0; }
+            body { margin: 1 cm; }
+        }
+
+    </style>
+  </head>
+  <body>
+    <script>
+        const { renderInvoice, renderTimesheet } = importInvoice({ ramda: R });
+        const text = `
+Mon 26 Feb 2024 10:30 - 14:00, 14:30 - 19:30 Make LDAP work .
+Tue 27 Feb 2024 11:15 - 13:00, 13:30 - 18:15 Merge LDAP .
+Thu 29 Feb 2024 10:45 - 13:00, 13:30 - 16:30 Deploy LDAP .
+Fri 01 Mar 2024 10:00 - 13:00, 13:30 - 18:45 Upgrade HP desktop from .
+
+Tue 05 Mar 2024 10:15 - 13:00, 13:30 - 15:00, 21:15 - 22:30 Fix nvidia .
+Wed 06 Mar 2024 16:00 - 17:30 Sprint and discussion.
+Thu 07 Mar 2024 10:00 - 12:30, 14:00 - 16:30 Fix adtas ..
+Fri 08 Mar 2024 10:30 - 16:00 Whentun.
+`;
+        const fileNameWithExtension = window.location.pathname.split('/').pop();
+        const [fileName, ext] = fileNameWithExtension.split('.');
+
+        const match = fileName.match(/^\d{4}-\d{1,2}-\d{1,2}/); // use d{} to search for 1-2 digits
+        const tempDate = match ? match[0] : '';
+        const textAfterDate = fileName.replace(tempDate, '');
+        const [year, month, day] = tempDate.split('-');
+
+        const queryString = window.location.search;
+        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(new Date(year, month-1, day), text);
+    </script>
+  </body>
+</html>
