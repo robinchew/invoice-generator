@@ -30,11 +30,10 @@ function importInvoice({ ramda: R }) {
     return arr.reduce((acc, num) => acc + num, 0);
   }
   function replaceLine(line) {
-  try {
     const segmented = R.flatten(
       R.splitEvery(2, line.split(re)).map(([text, match]) => {
         if (!match) {
-          return [text]; // Return an array with just the text when there's no match
+          return text;
         }
         const [start, end] = match.replace(' ', '').split('-');
 
@@ -53,12 +52,7 @@ function importInvoice({ ramda: R }) {
     const description = R.last(segmented);
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
-  } catch (error) {
-    console.error('Error in replaceLine:', error);
-    return ['Error', '', 'Error', 0]; // Return an array representing an error case
   }
-}
-
   function renderInvoice(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
