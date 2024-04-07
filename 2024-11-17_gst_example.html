@@ -76,13 +76,11 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         const fileNameWithExtension = window.location.pathname.split('/').pop();
         const [fileName, ext] = fileNameWithExtension.split('.');
 
-        const match = fileName.match(/^\d{4}-\d{1,2}-\d{1,2}/); // use d{} to search for 1-2 digits
-        const tempDate = match ? match[0] : '';
-        const textAfterDate = fileName.replace(tempDate, '');
+        const [_, tempDate, textAfterDate] = fileName.match(/^(\d{4}-\d{2}-\d{2})(.*)/); // use d{} to search for 1-2 digits
         const [year, month, day] = tempDate.split('-');
 
         const queryString = window.location.search;
-        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(new Date(year, month-1, day), text);
+        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(new Date(year, month-1, day), text, 80, 20);
     </script>
   </body>
 </html>

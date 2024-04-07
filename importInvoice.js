@@ -53,9 +53,7 @@ function importInvoice({ ramda: R }) {
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
   }
-  function renderInvoice(invoiceDate, text, adjustments = [], invoicePrefix = 'OX', client = { company: 'Orexplore Technologies', email: 'accounts@orexplore.com', phone: '(08) 9469 2900' }) {
-      const hourlyWage = 80; // Example hourly wage baed on screenshot, you can adjust this value
-      const taxPercent = 10; // Percent to be added at the end
+  function renderInvoice(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
           const [date, timeRange, description, hours] = columns;
@@ -126,7 +124,8 @@ function importInvoice({ ramda: R }) {
           </table>
       </div>`;
 
-      const invoice = `<h1>Invoice ${invoiceId} </h1>`
+      const invoiceTitle = taxPercent > 0 ? `Tax Invoice ${invoiceId}` : 'Invoice';
+      const invoice = `<h1>${invoiceTitle}</h1>`;
       const currDate = `<h3>${formatDate(invoiceDate)}</h3>`
       const userDetails = `
       <div class='header'>
