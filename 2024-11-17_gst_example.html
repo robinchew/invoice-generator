@@ -80,7 +80,7 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         const [year, month, day] = tempDate.split('-');
 
         const queryString = window.location.search;
-        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(new Date(year, month-1, day), text, 80, 20);
+        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(text, [], new Date(year, month-1, day), 80, 20);
     </script>
   </body>
 </html>
