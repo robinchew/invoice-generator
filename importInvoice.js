@@ -30,10 +30,11 @@ function importInvoice({ ramda: R }) {
     return arr.reduce((acc, num) => acc + num, 0);
   }
   function replaceLine(line) {
+  try {
     const segmented = R.flatten(
       R.splitEvery(2, line.split(re)).map(([text, match]) => {
         if (!match) {
-          return text;
+          return [text]; // Return an array with just the text when there's no match
         }
         const [start, end] = match.replace(' ', '').split('-');
 
@@ -52,7 +53,12 @@ function importInvoice({ ramda: R }) {
     const description = R.last(segmented);
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
+  } catch (error) {
+    console.error('Error in replaceLine:', error);
+    return ['Error', '', 'Error', 0]; // Return an array representing an error case
   }
+}
+
   function renderInvoice(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
@@ -144,10 +150,16 @@ function importInvoice({ ramda: R }) {
   }
   function renderTimesheet(date, text, adjustments=[]) {
       const rows = text.split('\n').filter(v => v).map(replaceLine).concat(adjustments);
-      const result = rows.map(columns => `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`).join('\n');
+      const result = rows.map(columns => {
+        if (Array.isArray(columns)) {
+          return `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`;
+        } else {
+          return ''; // set empty if not array
+        }
+      }).join('\n');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])) + 'hrs</h1>';
+      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => Array.isArray(arr) ? arr[3]:0)) + 'hrs</h1>';
   }
   return {
     renderInvoice,
