@@ -142,18 +142,12 @@ function importInvoice({ ramda: R }) {
       `;
       document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper" style="page-break-inside:avoid">${clientDetails}${bankingDetails}</div>`;
   }
-  function renderTimesheet(date, text, adjustments=[]) {
+  function renderTimesheet(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter(v => v).map(replaceLine).concat(adjustments);
-      const result = rows.map(columns => {
-        if (Array.isArray(columns)) {
-          return `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`;
-        } else {
-          return ''; // set empty if not array
-        }
-      }).join('\n');
+      const result = rows.map(columns => `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`).join('\n');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => Array.isArray(arr) ? arr[3]:0)) + 'hrs</h1>';
+      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])) + 'hrs</h1>';
   }
   return {
     renderInvoice,
