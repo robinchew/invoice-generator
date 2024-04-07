@@ -53,7 +53,7 @@ function importInvoice({ ramda: R }) {
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
   }
-  function renderInvoice(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
+  function renderInvoice(invoiceDate, text, adjustments = [], hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
           const [date, timeRange, description, hours] = columns;
@@ -142,7 +142,7 @@ function importInvoice({ ramda: R }) {
       `;
       document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper" style="page-break-inside:avoid">${clientDetails}${bankingDetails}</div>`;
   }
-  function renderTimesheet(invoiceDate, text, hourlyWage = 0, taxPercent = 10, adjustments = [], invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
+  function renderTimesheet(invoiceDate, text, adjustments = []) {
       const rows = text.split('\n').filter(v => v).map(replaceLine).concat(adjustments);
       const result = rows.map(columns => `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`).join('\n');
       const firstDate = rows[0][0];
