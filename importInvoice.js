@@ -53,7 +53,10 @@ function importInvoice({ ramda: R }) {
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
   }
-  function renderInvoice(text, adjustments = [], invoiceDate, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
+  function renderInvoice(text, adjustments = [], invoiceDate, titlePrefix, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX',
+          client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'},
+          business = {name: 'Business Name', bank: 'Bank Name', accountName: 'Account Name', BSB: '000000', accountNumber: '000000', email: 'mail@gmail.com', ABN: "00000000000"}
+      ) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
           const [date, timeRange, description, hours] = columns;
@@ -73,17 +76,19 @@ function importInvoice({ ramda: R }) {
       ].map(zeroPrefix).join('');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      const totalRow = `<tr style="font-weight:bold"><td colspan="2"></td><td style="text-align:right;">Total</td><td>${totalHours.toFixed(2)}</td><td>$${totalAmount.toFixed(2)}</td></tr>
-                         <tr style="font-weight:bold"><td colspan="3"></td><td>Tax (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>
-                         <tr style="font-weight:bold"><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>`;
-      const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th style="white-space:nowrap">$80 x hrs</th></tr></thead><tbody>' + tableRows + totalRow + '</tbody></table>';
+      let totalRow = `<tr style="font-weight:bold"><td colspan="2"></td><td style="text-align:right;">Total</td><td>${totalHours.toFixed(2)}</td><td>$${totalAmount.toFixed(2)}</td></tr>`;
+      if (taxAmount > 0) {
+        totalRow += `<tr style="font-weight:bold"><td colspan="3"></td><td>Tax (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>`;
+        totalRow += `<tr style="font-weight:bold"><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>`;
+      }
+      const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th style="white-space:nowrap">$'+hourlyWage+' x hrs</th></tr></thead><tbody>' + tableRows + totalRow + '</tbody></table>';
       const totalAmountText = `<h1>AMOUNT DUE: $<span style="text-decoration:underline">${grandTotal.toFixed(2)} AUD</span></h1>`;
       const clientDetails = `
       <div class="client-details">
           <h2>Client Details</h2>
           <table>
               <tr>
-                  <td>Company</td>
+                  <td>Name</td>
                   <td>${client.company}</td>
               </tr>
               <tr>
@@ -102,19 +107,19 @@ function importInvoice({ ramda: R }) {
           <table>
               <tr>
                   <td>Bank</td>
-                  <td>Bankwest</td>
+                  <td>${business.bank}</td>
               </tr>
               <tr>
                   <td>Account Name</td>
-                  <td>Robin Bankwest</td>
+                  <td>${business.accountName}</td>
               </tr>
               <tr>
                   <td>BSB No.</td>
-                  <td>306063</td>
+                  <td>${business.BSB}</td>
               </tr>
               <tr>
                   <td>Account Number</td>
-                  <td>0977324</td>
+                  <td>${business.accountNumber}</td>
               </tr>
               <tr>
                   <td>Reference</td>
@@ -130,24 +135,24 @@ function importInvoice({ ramda: R }) {
       const userDetails = `
       <div class='header'>
           <span>
-          CHEW, RUOH PIN ROBIN
+          ${business.name}
           </span>
           <span>
-          ABN 73 767 915 269
+          ABN ${business.ABN}
           </span>
           <span>
-              me@robin.com.au
+              ${business.email}
           </span
       </div>
       `;
       document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper" style="page-break-inside:avoid">${clientDetails}${bankingDetails}</div>`;
   }
-  function renderTimesheet(text, adjustments = [], invoiceDate) {
+  function renderTimesheet(text, adjustments = [], invoiceDate, titlePrefix) {
       const rows = text.split('\n').filter(v => v).map(replaceLine).concat(adjustments);
       const result = rows.map(columns => `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`).join('\n');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])) + 'hrs</h1>';
+      document.body.innerHTML = `<h1>${titlePrefix} - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])).toFixed(2) + 'hrs</h1>';
   }
   return {
     renderInvoice,
