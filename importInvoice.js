@@ -86,7 +86,7 @@ function importInvoice({ ramda: R }) {
           <h2>Client Details</h2>
           <table>
               <tr>
-                  <td>Company</td>
+                  <td>Name</td>
                   <td>${client.company}</td>
               </tr>
               <tr>
