@@ -73,7 +73,7 @@ function importInvoice({ ramda: R }) {
       ].map(zeroPrefix).join('');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      const totalRow = `<tr style="font-weight:bold"><td colspan="3"></td><td>Total</td><td>$${totalAmount.toFixed(2)}</td></tr>
+      const totalRow = `<tr style="font-weight:bold"><td colspan="2"></td><td style="text-align:right;">Total</td><td>${totalHours.toFixed(2)}</td><td>$${totalAmount.toFixed(2)}</td></tr>
                          <tr style="font-weight:bold"><td colspan="3"></td><td>Tax (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>
                          <tr style="font-weight:bold"><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>`;
       const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th style="white-space:nowrap">$80 x hrs</th></tr></thead><tbody>' + tableRows + totalRow + '</tbody></table>';
