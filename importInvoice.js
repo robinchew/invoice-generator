@@ -53,7 +53,10 @@ function importInvoice({ ramda: R }) {
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
   }
-  function renderInvoice(text, adjustments = [], invoiceDate, titlePrefix, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
+  function renderInvoice(text, adjustments = [], invoiceDate, titlePrefix, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX',
+          client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'},
+          business = {name: 'Business Name', bank: 'Bank Name', accountName: 'Account Name', BSB: '000000', accountNumber: '000000', email: 'mail@gmail.com', ABN: "00000000000"}
+      ) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
           const [date, timeRange, description, hours] = columns;
@@ -102,19 +105,19 @@ function importInvoice({ ramda: R }) {
           <table>
               <tr>
                   <td>Bank</td>
-                  <td>Bankwest</td>
+                  <td>${business.bank}</td>
               </tr>
               <tr>
                   <td>Account Name</td>
-                  <td>Robin Bankwest</td>
+                  <td>${business.accountName}</td>
               </tr>
               <tr>
                   <td>BSB No.</td>
-                  <td>306063</td>
+                  <td>${business.BSB}</td>
               </tr>
               <tr>
                   <td>Account Number</td>
-                  <td>0977324</td>
+                  <td>${business.accountNumber}</td>
               </tr>
               <tr>
                   <td>Reference</td>
@@ -130,13 +133,13 @@ function importInvoice({ ramda: R }) {
       const userDetails = `
       <div class='header'>
           <span>
-          CHEW, RUOH PIN ROBIN
+          ${business.name}
           </span>
           <span>
-          ABN 73 767 915 269
+          ABN ${business.ABN}
           </span>
           <span>
-              me@robin.com.au
+              ${business.email}
           </span
       </div>
       `;

@@ -80,7 +80,7 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         const [year, month, day] = tempDate.split('-');
 
         const queryString = window.location.search;
-        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(text, [], new Date(year, month-1, day), "Robin TimeSheet", 80, 20);
+        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(text, [], new Date(year, month-1, day), "Robin TimeSheet", 80, 20, 'OX', {company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}, {name: 'CHEW, ROUH PIN ROBIN', bank: 'Bank West', accountName: 'Robin Bankwest', BSB: '306063', accountNumber: '0977324', email: 'me@robin.com.au', ABN: "73 767 915 269"});
     </script>
   </body>
 </html>
