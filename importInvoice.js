@@ -76,10 +76,12 @@ function importInvoice({ ramda: R }) {
       ].map(zeroPrefix).join('');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      const totalRow = `<tr style="font-weight:bold"><td colspan="2"></td><td style="text-align:right;">Total</td><td>${totalHours.toFixed(2)}</td><td>$${totalAmount.toFixed(2)}</td></tr>
-                         <tr style="font-weight:bold"><td colspan="3"></td><td>Tax (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>
-                         <tr style="font-weight:bold"><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>`;
-      const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th style="white-space:nowrap">$80 x hrs</th></tr></thead><tbody>' + tableRows + totalRow + '</tbody></table>';
+      let totalRow = `<tr style="font-weight:bold"><td colspan="2"></td><td style="text-align:right;">Total</td><td>${totalHours.toFixed(2)}</td><td>$${totalAmount.toFixed(2)}</td></tr>`;
+      if (taxAmount > 0) {
+        totalRow += `<tr style="font-weight:bold"><td colspan="3"></td><td>Tax (${taxPercent}%)</td><td>$${taxAmount.toFixed(2)}</td></tr>`;
+      }
+      totalRow += `<tr style="font-weight:bold"><td colspan="3"></td><td>Grand Total</td><td>$${grandTotal.toFixed(2)}</td></tr>`;
+      const invoiceTable = '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th><th style="white-space:nowrap">$'+hourlyWage+' x hrs</th></tr></thead><tbody>' + tableRows + totalRow + '</tbody></table>';
       const totalAmountText = `<h1>AMOUNT DUE: $<span style="text-decoration:underline">${grandTotal.toFixed(2)} AUD</span></h1>`;
       const clientDetails = `
       <div class="client-details">
