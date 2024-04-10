@@ -53,7 +53,7 @@ function importInvoice({ ramda: R }) {
     const totalHoursPerRow = sum(segmented.map((item) => item.hours || 0));
     return [dateColumn, timeRange, description, totalHoursPerRow];
   }
-  function renderInvoice(text, adjustments = [], invoiceDate, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
+  function renderInvoice(text, adjustments = [], invoiceDate, titlePrefix, hourlyWage = 0, taxPercent = 10, invoicePrefix = 'OX', client = { company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}) {
       const rows = text.split('\n').filter((v) => v).map(replaceLine).concat(adjustments);
       const tableRows = rows.map((columns) => {
           const [date, timeRange, description, hours] = columns;
@@ -142,12 +142,12 @@ function importInvoice({ ramda: R }) {
       `;
       document.body.innerHTML = `<div class="user-details">${userDetails}</div>` + `<div class="invoice-date">${invoice}${currDate}</div>` + invoiceTable  + totalAmountText +   `<div class="details-wrapper" style="page-break-inside:avoid">${clientDetails}${bankingDetails}</div>`;
   }
-  function renderTimesheet(text, adjustments = [], invoiceDate) {
+  function renderTimesheet(text, adjustments = [], invoiceDate, titlePrefix) {
       const rows = text.split('\n').filter(v => v).map(replaceLine).concat(adjustments);
       const result = rows.map(columns => `<tr><td>${columns.map(v => v.toFixed ? v.toFixed(2) : v).join('</td><td>')}</td></tr>`).join('\n');
       const firstDate = rows[0][0];
       const lastDate = R.last(rows)[0];
-      document.body.innerHTML = `<h1>Robin Timesheet - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])) + 'hrs</h1>';
+      document.body.innerHTML = `<h1>${titlePrefix} - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])).toFixed(2) + 'hrs</h1>';
   }
   return {
     renderInvoice,
