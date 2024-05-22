@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="ramda.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.27.1/ramda.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script src="importInvoice.js"></script>
     <title></title>
     <meta charset="UTF-8" />
@@ -61,7 +62,7 @@
   </head>
   <body>
     <script>
-        const { renderInvoice, renderTimesheet } = importInvoice({ ramda: R });
+        const { renderInvoice, renderTimesheet, generatePDF } = importInvoice({ ramda: R });
         const text = `
 Mon 26 Feb 2024 10:30 - 14:00, 14:30 - 19:30 Make LDAP work .
 Tue 27 Feb 2024 11:15 - 13:00, 13:30 - 18:15 Merge LDAP .
@@ -80,7 +81,16 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         const [year, month, day] = tempDate.split('-');
 
         const queryString = window.location.search;
-        (queryString === '?invoice' ? renderInvoice : renderTimesheet)(text, [], new Date(year, month-1, day), "Robin TimeSheet", 80, 20, '--', {company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}, {name: 'CHEW, ROUH PIN ROBIN', bank: 'Bank West', accountName: 'Robin Bankwest', BSB: '306063', accountNumber: '0977324', email: 'me@robin.com.au', ABN: "73 767 915 269"});
+        const isInvoice = queryString === '?invoice';
+        const prefix = '--';
+
+        if (isInvoice) {
+            renderInvoice(text, [], new Date(year, month-1, day), "Robin TimeSheet", 80, 20, prefix, {company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}, {name: 'CHEW, ROUH PIN ROBIN', bank: 'Bank West', accountName: 'Robin Bankwest', BSB: '306063', accountNumber: '0977324', email: 'me@robin.com.au', ABN: "73 767 915 269"});
+            generatePDF(true, `XX${year}${month}${day}`);
+        } else {
+            renderTimesheet(text, [], new Date(year, month-1, day), "Robin TimeSheet");
+            generatePDF(false, `${year}-${month}-${day}_timesheet`);
+        }
     </script>
   </body>
 </html>

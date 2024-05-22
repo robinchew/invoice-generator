@@ -154,8 +154,23 @@ function importInvoice({ ramda: R }) {
       const lastDate = R.last(rows)[0];
       document.body.innerHTML = `<h1>${titlePrefix} - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])).toFixed(2) + 'hrs</h1>';
   }
+
+  function generatePDF(isInvoice, fileName) {
+      const element = document.body;
+      const opt = {
+          margin: 0.5,
+          filename: `${fileName}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+  }
+
   return {
     renderInvoice,
     renderTimesheet,
+    generatePDF,
   };
 }
