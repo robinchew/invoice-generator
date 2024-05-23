@@ -1,16 +1,10 @@
 #!/bin/bash
 set -e
-which chromium
-
-if [ -z $1 ];then
-    echo "1 argument required";
-    exit 1;
-fi;
 
 # Define the HTML input file path
 html_file=$1
 
-chrome_bin=${CHROME_BIN:-"google-chrome"}
+chrome_bin=${CHROME_BIN:-"chromium"}
 
 # Run Chrome Headless in headless mode to generate the PDF
 for qs in invoice timesheet;do
