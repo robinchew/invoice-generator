@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+if [ -z $1 ];then
+    echo "1 argument required";
+    exit 1;
+fi;
+
+
 # Define the HTML input file path
 html_file=$1
 
