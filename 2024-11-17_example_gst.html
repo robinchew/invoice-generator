@@ -111,8 +111,11 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         if (isDownload) {
             renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
             generatePDF(`${year}-${month}-${day}_timesheet`);
-            renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
-            generatePDF(`XX${year}${month}${day}`);
+            #wait for page to convert to pdf
+            setTimeout(function(){
+                renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
+                generatePDF(`XX${year}${month}${day}`);
+            }, 1000);
         }
         else if(isInvoice) {
             renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
