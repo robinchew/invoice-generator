@@ -63,6 +63,29 @@
   <body>
     <script>
         const { renderInvoice, renderTimesheet, generatePDF } = importInvoice({ ramda: R });
+
+        const adjustments = [];
+        const titlePrefix = 'Robin TimeSheet';
+        const hourlyWage = 80;
+        const taxPercent = 10;
+        const invoicePrefix = '--';
+
+        const clientDetails = {
+            company: 'Company Name',
+            email: 'name@email.com',
+            phone: '(08) 0000 0000'
+        };
+
+        const businessDetails = {
+            name: 'Business Name',
+            bank: 'Bank Name',
+            accountName: 'Account Name',
+            BSB: '000000',
+            accountNumber: '000000',
+            email: 'mail@gmail.com',
+            ABN: '00000000000'
+        };
+
         const text = `
 Mon 26 Feb 2024 10:30 - 14:00, 14:30 - 19:30 Make LDAP work .
 Tue 27 Feb 2024 11:15 - 13:00, 13:30 - 18:15 Merge LDAP .
@@ -79,17 +102,21 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
 
         const [_, tempDate, textAfterDate] = fileName.match(/^(\d{4}-\d{2}-\d{2})(.*)/); // use d{} to search for 1-2 digits
         const [year, month, day] = tempDate.split('-');
+        const invoiceDate = new Date(year, month - 1, day);
 
         const queryString = window.location.search;
         const isInvoice = queryString === '?invoice';
-        const prefix = '--';
+        const isDownload = queryString === '?download';
 
         if (isInvoice) {
-            renderInvoice(text, [], new Date(year, month-1, day), "Robin TimeSheet", 80, 20, prefix, {company: 'Company Name', email: 'name@email.com', phone: '(08) 0000 0000'}, {name: 'CHEW, ROUH PIN ROBIN', bank: 'Bank West', accountName: 'Robin Bankwest', BSB: '306063', accountNumber: '0977324', email: 'me@robin.com.au', ABN: "73 767 915 269"});
-            generatePDF(true, `XX${year}${month}${day}`);
+            renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
         } else {
-            renderTimesheet(text, [], new Date(year, month-1, day), "Robin TimeSheet");
+            renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
+        }
+
+        if (isDownload) {
             generatePDF(false, `${year}-${month}-${day}_timesheet`);
+            generatePDF(true, `XX${year}${month}${day}`);
         }
     </script>
   </body>
