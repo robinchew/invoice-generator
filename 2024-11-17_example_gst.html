@@ -108,15 +108,17 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
         const isInvoice = queryString === '?invoice';
         const isDownload = queryString === '?download';
 
-        if (isInvoice) {
-            renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
-        } else {
-            renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
-        }
-
         if (isDownload) {
+            renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
             generatePDF(false, `${year}-${month}-${day}_timesheet`);
+            renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
             generatePDF(true, `XX${year}${month}${day}`);
+        }
+        else if(isInvoice) {
+            renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
+        }
+        else {
+            renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
         }
     </script>
   </body>
