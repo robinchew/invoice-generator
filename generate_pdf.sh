@@ -6,7 +6,6 @@ if [ -z $1 ];then
     exit 1;
 fi;
 
-
 # Define the HTML input file path
 html_file=$1
 
