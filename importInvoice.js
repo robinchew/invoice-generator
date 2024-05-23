@@ -155,7 +155,7 @@ function importInvoice({ ramda: R }) {
       document.body.innerHTML = `<h1>${titlePrefix} - ${firstDate} to ${lastDate}</h1>` +  '<table><thead><tr><th>Date</th><th>Time</th><th>Description</th><th>Hours</th></tr></thead><tbody>' + result + '</tbody></table><h1>Total Hours: ' + sum(rows.map(arr => arr[3])).toFixed(2) + 'hrs</h1>';
   }
 
-  function generatePDF(isInvoice, fileName) {
+  function generatePDF(fileName) {
       const element = document.body;
       const opt = {
           margin: 0.5,
