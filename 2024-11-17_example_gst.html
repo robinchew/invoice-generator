@@ -106,22 +106,57 @@ Fri 08 Mar 2024 10:30 - 16:00 Whentun.
 
         const queryString = window.location.search;
         const isInvoice = queryString === '?invoice';
-        const isDownload = queryString === '?download';
+        const isTimesheet = queryString === '?timesheet';
 
-        if (isDownload) {
+        if (isTimesheet) {
             renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
-            generatePDF(`${year}-${month}-${day}_timesheet`);
-            // wait for page to convert to pdf
-            setTimeout(function(){
-                renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
-                generatePDF(`XX${year}${month}${day}`);
-            }, 1000);
         }
-        else if(isInvoice) {
+        if(isInvoice) {
             renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
         }
         else {
-            renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
+            const buttonTSPreview = document.createElement('button')
+            buttonTSPreview.innerText = 'Preview Timesheet'
+            buttonTSPreview.addEventListener('click', () => {
+                renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
+            })
+            document.body.appendChild(buttonTSPreview)
+
+            const buttonIPreview = document.createElement('button')
+            buttonIPreview.innerText = 'Preview Invoice'
+            buttonIPreview.addEventListener('click', () => {
+                renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
+            })
+            document.body.appendChild(buttonIPreview)
+
+
+            // const input = document.createElement('input');
+            // input.type = "text";
+            // input.value = "use ?timesheet or ?invoice to preview";
+            // input.style = "width:225px"
+            // document.body.appendChild(input)
+
+            const buttonTS = document.createElement('button')
+            buttonTS.innerText = 'Download Timesheet'
+            buttonTS.addEventListener('click', () => {
+                renderTimesheet(text, adjustments, invoiceDate, titlePrefix);
+                generatePDF(`${year}-${month}-${day}_timesheet`);
+                setTimeout(() => {
+                  document.location.reload();
+                }, 1000);
+            })
+            document.body.appendChild(buttonTS)
+
+            const buttonI = document.createElement('button')
+            buttonI.innerText = 'Download Invoice'
+            buttonI.addEventListener('click', () => {
+                renderInvoice(text, adjustments, invoiceDate, titlePrefix, hourlyWage, taxPercent, invoicePrefix, clientDetails, businessDetails);
+                generatePDF(`XX${year}${month}${day}`);
+                setTimeout(() => {
+                  document.location.reload();
+                }, 1000);
+            })
+            document.body.appendChild(buttonI)
         }
     </script>
   </body>
